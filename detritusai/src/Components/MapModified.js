@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from "react";
 import ReactDOM from "react-dom";
 import NavBar from './NavBar';
+import MapSolaceRecycle from './MapSolaceRecycle';
+import MapSolaceTrash from './MapSolaceTrash';
 
 import {
   useLoadScript,
@@ -28,10 +30,10 @@ function MapModified() {
   // The places I want to create markers for.
   // This could be a data-driven prop.
   const myPlaces = [
-    { id: "University of Toronto", pos: { lat: 43.662969, lng: -79.395764 }, content: "Recycle: 54% | Compose: 30%"},
-    { id: "Yonge-Dundas Square", pos: { lat: 43.656283, lng: -79.380214 }, content: "Recycle: 70% | Compose: 90%" },
-    { id: "Waste Management - Etobicoke Transfer Station", pos: { lat: 43.607513, lng: -79.507833 }, content: "Recycle: 4% | Compose: 10%" },
-    { id: "Toronto City Hall", pos: { lat: 43.653649, lng:  -79.384004 }, content: "Recycle: 64% | Compose: 39%" }
+  { id: "University of Toronto", pos: { lat: 43.662969, lng: -79.395764 }, contentRecycle: <MapSolaceRecycle />, contentTrash: <MapSolaceTrash />},
+    { id: "Yonge-Dundas Square", pos: { lat: 43.656283, lng: -79.380214 }, contentRecycle: "70.153749", contentTrash: ":90.917473" },
+    { id: "Waste Management - Etobicoke Transfer Station", pos: { lat: 43.607513, lng: -79.507833 }, contentRecycle: "4.197493", contentTrash: "50.197403" },
+    { id: "Toronto City Hall", pos: { lat: 43.653649, lng:  -79.384004 }, contentRecycle: "0.000000", contentTrash: "100.000000"}
   ];
 
   // Iterate myPlaces to size, center, and zoom map to contain all markers
@@ -82,7 +84,7 @@ function MapModified() {
     return (
       <Fragment>
 
-          <NavBar></NavBar>
+        <NavBar></NavBar>
         <GoogleMap
           // Do stuff on map initial laod
           onLoad={loadHandler}
@@ -114,7 +116,8 @@ function MapModified() {
             >
               <div>
                 <h3>{selectedPlace.id}</h3>
-                <div>{selectedPlace.content}</div>
+                <div><th>Recycle: </th><th>{selectedPlace.contentRecycle}</th><th>%</th></div>
+                <div><th>Garbage: </th><th>{selectedPlace.contentTrash}</th><th>%</th></div>
               </div>
             </InfoWindow>
           )}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from './Components/Home';
-import Map from './Components/Map';
 import MapModified from './Components/MapModified';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
