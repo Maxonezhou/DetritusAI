@@ -17,8 +17,6 @@
 //#define SSID "Hotspot"
 #define PASSWORD "12345678"
 
-Servo servo_trash;
-
 // Get the chipid
 uint32_t chipId = ESP.getChipId();
 
@@ -39,7 +37,8 @@ const int ESP_BUILTIN_LED = 2;
 
 unsigned long loopCounter = 0;
 
-Adafruit_VL53L0X lox_trash = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox_obj = Adafruit_VL53L0X();
+boolean obj_exists = false;
 
 void ConnectToWifi()
 {
@@ -83,15 +82,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Get topic name as string
   String topicString(t);
-
-  if (topicString.startsWith("Trash"))
-  {
-    Serial.println("[INFO] Trash Motor Recieved Message");
-    servo_trash.write(15);
-    delay(5000);
-    servo_trash.write(100);
-    delay(1000);
-  }
 }
 
 void setup() 
@@ -115,15 +105,12 @@ void setup()
   delay(1);
   }
 
-  Serial.println("TOF Trash Sensor Start");
-  if (!lox_trash.begin())
+  Serial.println("TOF Obj Sensor Start");
+  if (!lox_obj.begin())
   {
-  Serial.println(F("Failed to boot TOF Trash Sensor"));
+  Serial.println(F("Failed to boot TOF Obj Sensor"));
   while(1);
   }
-
-  servo_trash.attach(D4); //D4 - Trash
-  servo_trash.write(100);
 
   delay(2000);
 }
@@ -138,6 +125,7 @@ boolean mqttReconnect() {
     // Subscribe to global drive commands
     // Subscription
 
+    client.subscribe("Recycling");
     client.subscribe("Trash");
   } else {
     Serial.println("[ERROR] Not Connected");
@@ -147,25 +135,32 @@ boolean mqttReconnect() {
 
 void loop() 
 {
-  VL53L0X_RangingMeasurementData_t trash_measure;
+  VL53L0X_RangingMeasurementData_t obj_measure;
  
-  Serial.print("Reading trash measurement... ");
-  lox_trash.rangingTest(&trash_measure, false); // pass in 'true' to get debug data printout!
+  Serial.print("Reading obj measurement... ");
+  lox_obj.rangingTest(&obj_measure, false); // pass in 'true' to get debug data printout!
   
-  if (trash_measure.RangeStatus != 4)
+  if (obj_measure.RangeStatus != 4)
   { // phase failures have incorrect data
-  Serial.print("Distance (mm): "); Serial.println(trash_measure.RangeMilliMeter);
+  Serial.print("Distance (mm): "); Serial.println(obj_measure.RangeMilliMeter);
   }
   else
   {
-  Serial.println(" out of range ");
+  Serial.println("out of range ");
   }
 
-  float trash_vol = 100.0 - ((trash_measure.RangeMilliMeter / 300.0) * 100.0);
-  Serial.print("Trash volume (%): "); Serial.println(trash_vol);
-  char trash_vol_string[6];
-  sprintf(trash_vol_string, "%f", trash_vol);
-  client.publish("DetritusAI/UofT/State/TrashVol", trash_vol_string);
+  if (obj_measure.RangeMilliMeter <= 100)
+  {
+    Serial.println("[INFO] Object detected, removing hystersis");
+    delay(100);
+    if (obj_measure.RangeMilliMeter <= 100)
+    {
+      Serial.println("[INFO] Object detected confirmed, sending confirmation");
+      char obj_string[4];
+      sprintf(obj_string, "True");
+      client.publish("ObjDetect", obj_string);
+    }
+  }
 
   if ((loopCounter % 200 == 0) && !client.connected()) {
     long now = millis();

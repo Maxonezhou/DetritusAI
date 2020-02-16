@@ -13,7 +13,7 @@
 
 #include <Servo.h>
 
-#define SSID "Be grateful for frank's wifi"
+#define SSID "Shaqib"
 //#define SSID "Hotspot"
 #define PASSWORD "12345678"
 
@@ -99,7 +99,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("[INFO] Trash Motor Recieved Message");
     servo_trash.write(0);
     delay(5000);
-    servo_trash.write(0);
+    servo_trash.write(117);
     delay(1000);
   }
 }
@@ -132,25 +132,8 @@ void setup()
   while(1);
   }
 
-  Serial.println("TOF Trash Sensor Start");
-  if (!lox_trash.begin())
-  {
-  Serial.println(F("Failed to boot TOF Trash Sensor"));
-  while(1);
-  }
-
-  Serial.println("TOF Obj Sensor Start");
-  if (!lox_obj.begin())
-  {
-  Serial.println(F("Failed to boot TOF Obj Sensor"));
-  while(1);
-  }
-
   servo_recycling.attach(D7); //D4 - recycling
   servo_recycling.write(117);
-
-  servo_trash.attach(D4); //D4 - Trash
-  servo_trash.write(0);
 
   delay(2000);
 }
@@ -190,31 +173,11 @@ void loop()
   Serial.println(" out of range ");
   }
 
-  float recycling_vol = 100.0 - ((recycling_measure.RangeMilliMeter / 346.0) * 100.0);
+  float recycling_vol = 100.0 - ((recycling_measure.RangeMilliMeter / 300.0) * 100.0);
   Serial.print("Recycling volume (%): "); Serial.println(recycling_vol);
   char recycling_vol_string[6];
   sprintf(recycling_vol_string, "%f", recycling_vol);
   client.publish("DetritusAI/UofT/State/RecyclingVol", recycling_vol_string);
-
-  VL53L0X_RangingMeasurementData_t trash_measure;
- 
-  Serial.print("Reading trash measurement... ");
-  lox_trash.rangingTest(&trash_measure, false); // pass in 'true' to get debug data printout!
-  
-  if (trash_measure.RangeStatus != 4)
-  { // phase failures have incorrect data
-  Serial.print("Distance (mm): "); Serial.println(trash_measure.RangeMilliMeter);
-  }
-  else
-  {
-  Serial.println(" out of range ");
-  }
-
-  float trash_vol = 100.0 - ((trash_measure.RangeMilliMeter / 346.0) * 100.0);
-  Serial.print("Trash volume (%): "); Serial.println(trash_vol);
-  char trash_vol_string[6];
-  sprintf(trash_vol_string, "%f", trash_vol);
-  client.publish("DetritusAI/UofT/State/TrashVol", trash_vol_string);
 
   if ((loopCounter % 200 == 0) && !client.connected()) {
     long now = millis();
