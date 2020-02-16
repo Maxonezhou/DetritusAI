@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import NavBar from './NavBar';
 import MapSolaceRecycle from './MapSolaceRecycle';
 import MapSolaceTrash from './MapSolaceTrash';
+import MapSolaceDirections from './MapSolaceDirections';
 
 import {
   useLoadScript,
@@ -32,8 +33,8 @@ function MapModified() {
   const myPlaces = [
   { id: "University of Toronto", pos: { lat: 43.662969, lng: -79.395764 }, contentRecycle: <MapSolaceRecycle />, contentTrash: <MapSolaceTrash />},
     { id: "Yonge-Dundas Square", pos: { lat: 43.656283, lng: -79.380214 }, contentRecycle: "70.153749", contentTrash: ":90.917473" },
-    { id: "Waste Management - Etobicoke Transfer Station", pos: { lat: 43.607513, lng: -79.507833 }, contentRecycle: "4.197493", contentTrash: "50.197403" },
-    { id: "Toronto City Hall", pos: { lat: 43.653649, lng:  -79.384004 }, contentRecycle: "0.000000", contentTrash: "100.000000"}
+    { id: "Waste Management - Etobicoke Transfer Station", pos: { lat: 43.607513, lng: -79.507833 }, directions: <MapSolaceDirections /> },
+    { id: "Toronto City Hall", pos: { lat: 43.653649, lng:  -79.384004 }, contentRecycle: "0.45837", contentTrash: "10.173957"}
   ];
 
   // Iterate myPlaces to size, center, and zoom map to contain all markers
@@ -116,8 +117,16 @@ function MapModified() {
             >
               <div>
                 <h3>{selectedPlace.id}</h3>
-                <div><th>Recycle: </th><th>{selectedPlace.contentRecycle}</th><th>%</th></div>
-                <div><th>Garbage: </th><th>{selectedPlace.contentTrash}</th><th>%</th></div>
+                {selectedPlace.id !== "Waste Management - Etobicoke Transfer Station" && 
+                  <div><th>Recycle: </th><th>{selectedPlace.contentRecycle}</th><th>%</th></div>
+                }
+
+                {selectedPlace.id !== "Waste Management - Etobicoke Transfer Station" && 
+                  <div><th>Garbage: </th><th>{selectedPlace.contentTrash}</th><th>%</th></div>
+                }
+                {selectedPlace.id === "Waste Management - Etobicoke Transfer Station" && 
+                  <div style={{whiteSpace: "pre-wrap"}}><th>Directions: </th><p>{selectedPlace.directions}</p></div>
+                }
               </div>
             </InfoWindow>
           )}
@@ -136,7 +145,7 @@ function MapModified() {
         )} */}
 
         {/* Position of the user's map click */}
-        {selectedPlace && <h3>Selected Marker: {selectedPlace.id}</h3>}
+        {/* {selectedPlace && <h3>Selected Marker: {selectedPlace.id}</h3>} */}
       </Fragment>
     );
   };

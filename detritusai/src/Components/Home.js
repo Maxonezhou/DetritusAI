@@ -19,19 +19,20 @@ function Home() {
   const classes = useStyles();
 
   return (
-      
-        <Container className = "App">
+      <div  className = "bg">
+        <Container>
 
             <Navbar></Navbar>
 
             <div className="Text">
-                <h1 style={{fontSize: "500%"}, {fontFamily: "PlayfairDisplay"}}><b>Detritus AI</b></h1>
+                <h1 style={{fontSize: "500%"}, {fontFamily: "PlayfairDisplay"}, {color: "white"}}><b>Detritus AI</b></h1>
 
-                <p style={{fontSize: "200%"}, {fontFamily: "PlayfairDisplay"}}>Detritus AI is a smart city garbage treatment component. Itrecognizes <br/>the garbage type
-                using machine learning and opens the corresponding lid.<br/> It uploads the fullness of each 
-                bin in real time. The data is transferred in real <br/> time using Solace and displayed on our front
+                <h5 style={{fontSize: "200%"}, {fontFamily: "PlayfairDisplay"}, {color: "white"}}>Detritus AI is a smart city garbage treatment component.
+                 It recognizes the garbage type
+                using machine learning and opens the corresponding lid. It uploads the fullness of each 
+                bin in real time. The data is transferred in real time using Solace and displayed on our front
                 end built with React.
-                </p>
+                </h5>
 
                 <div className={classes.root}>
                 <Button variant="contained" color="primary" href="/map">Get Started</Button>
@@ -44,6 +45,7 @@ function Home() {
 
         
         </Container>
+    </div>
 
   );
 }
