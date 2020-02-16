@@ -40,7 +40,15 @@ const int ESP_BUILTIN_LED = 2;
 
 unsigned long loopCounter = 0;
 
-Adafruit_VL53L0X lox_recycling = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox_trash = Adafruit_VL53L0X();
+
+// define pin numbers
+const int trigPin = 2;  //D4
+const int echoPin = 0;  //D3
+
+// defines variables
+long duration;
+int distance;
 
 void ConnectToWifi()
 {
@@ -85,21 +93,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Get topic name as string
   String topicString(t);
 
-  if (topicString.startsWith("Recycling"))
-  {
-    Serial.println("[INFO] Recycling Motor Recieved Message");
-    servo_recycling.write(0);
-
-    delay(5000);
-    servo_recycling.write(117);
-    delay(1000);
-  }
   if (topicString.startsWith("Trash"))
   {
     Serial.println("[INFO] Trash Motor Recieved Message");
     servo_trash.write(0);
     delay(5000);
-    servo_trash.write(0);
+    servo_trash.write(117);
     delay(1000);
   }
 }
@@ -125,13 +124,6 @@ void setup()
   delay(1);
   }
 
-  Serial.println("TOF Recycling Sensor Start");
-  if (!lox_recycling.begin())
-  {
-  Serial.println(F("Failed to boot TOF Recycling Sensor"));
-  while(1);
-  }
-
   Serial.println("TOF Trash Sensor Start");
   if (!lox_trash.begin())
   {
@@ -139,18 +131,11 @@ void setup()
   while(1);
   }
 
-  Serial.println("TOF Obj Sensor Start");
-  if (!lox_obj.begin())
-  {
-  Serial.println(F("Failed to boot TOF Obj Sensor"));
-  while(1);
-  }
-
-  servo_recycling.attach(D7); //D4 - recycling
-  servo_recycling.write(117);
-
   servo_trash.attach(D4); //D4 - Trash
-  servo_trash.write(0);
+  servo_trash.write(117);
+
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 
   delay(2000);
 }
@@ -175,27 +160,6 @@ boolean mqttReconnect() {
 
 void loop() 
 {
-  // put your main code here, to run repeatedly:
-  VL53L0X_RangingMeasurementData_t recycling_measure;
- 
-  Serial.print("Reading recycling measurement... ");
-  lox_recycling.rangingTest(&recycling_measure, false); // pass in 'true' to get debug data printout!
-  
-  if (recycling_measure.RangeStatus != 4)
-  { // phase failures have incorrect data
-  Serial.print("Distance (mm): "); Serial.println(recycling_measure.RangeMilliMeter);
-  }
-  else
-  {
-  Serial.println(" out of range ");
-  }
-
-  float recycling_vol = 100.0 - ((recycling_measure.RangeMilliMeter / 346.0) * 100.0);
-  Serial.print("Recycling volume (%): "); Serial.println(recycling_vol);
-  char recycling_vol_string[6];
-  sprintf(recycling_vol_string, "%f", recycling_vol);
-  client.publish("DetritusAI/UofT/State/RecyclingVol", recycling_vol_string);
-
   VL53L0X_RangingMeasurementData_t trash_measure;
  
   Serial.print("Reading trash measurement... ");
@@ -214,7 +178,25 @@ void loop()
   Serial.print("Trash volume (%): "); Serial.println(trash_vol);
   char trash_vol_string[6];
   sprintf(trash_vol_string, "%f", trash_vol);
-  client.publish("DetritusAI/UofT/State/TrashVol", trash_vol_string);
+  client.publish("DetritusAI/State/TrashVol", trash_vol_string);
+
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calculating the distance
+  distance= duration*0.034/2;
+  // Prints the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.println(distance);
 
   if ((loopCounter % 200 == 0) && !client.connected()) {
     long now = millis();
