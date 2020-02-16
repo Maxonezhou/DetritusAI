@@ -4,17 +4,27 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.2",
+    "@react-google-maps/api": "^1.8.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "@types/googlemaps": "^3.39.2",
     "bootstrap": "^4.4.1",
+    "cors": "^2.8.5",
     "google-maps-react": "^2.0.2",
+    "html-react-parser": "^0.10.1",
+    "install": "^0.13.0",
+    "mqtt": "^3.0.0",
+    "npm": "^6.13.7",
+    "paho-mqtt": "^1.1.0",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.12.0",
+    "react-google-maps": "^9.4.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "recompose": "^0.30.0"
   },
   "scripts": {
     "start": "react-scripts start",

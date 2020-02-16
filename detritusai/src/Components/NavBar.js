@@ -5,9 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import  { Container } from 'reactstrap';
 
-import { Fragment } from 'react';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-
 function NavBar() {
   return (
     <Container>
