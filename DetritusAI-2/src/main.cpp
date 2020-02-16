@@ -42,14 +42,6 @@ unsigned long loopCounter = 0;
 
 Adafruit_VL53L0X lox_trash = Adafruit_VL53L0X();
 
-// define pin numbers
-const int trigPin = 2;  //D4
-const int echoPin = 0;  //D3
-
-// defines variables
-long duration;
-int distance;
-
 void ConnectToWifi()
 {
   delay(100);
@@ -134,9 +126,6 @@ void setup()
   servo_trash.attach(D4); //D4 - Trash
   servo_trash.write(117);
 
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-
   delay(2000);
 }
 
@@ -179,24 +168,6 @@ void loop()
   char trash_vol_string[6];
   sprintf(trash_vol_string, "%f", trash_vol);
   client.publish("DetritusAI/State/TrashVol", trash_vol_string);
-
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-
-  // Calculating the distance
-  distance= duration*0.034/2;
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance: ");
-  Serial.println(distance);
 
   if ((loopCounter % 200 == 0) && !client.connected()) {
     long now = millis();
