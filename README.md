@@ -1,3 +1,9 @@
+# Github Organization
+DetritusAI, DetritusAI2, and DetritusAI-Obj contain the source code for the NodeMCU microcontrollers used in this project. The microcontroller handled the capacity of each garbage can using time-of-flight sensor, the motors used to open and close the garbage and recycling containers, and utilized Solace PubSub+ Cloud Message Brokering platform as the middleware for all communication. <br>
+
+.py files contain the image classification algorithm <br>
+
+
 # DetritusAI
 MakeUofT2020 - A novel solution for smart city urban waste collection. DetritusAI aims to help improve urban waste collection through two main ways. First, IoT enabled garbage and recycling containers have are outfitted with a camera that classifies objects as either waste or recycling. After the classification, the appropriate container (garbgage or recycling) will automatically open and prompt the user to dispose of their waste in the selected container. Each container is outfitted with time-of-flight sensors which are used to detect how full each garbage can is. This information is sent over Solace PubSub+ Platform which is picked up by our ReactJS frontend. The second part of this project utilizes this information to perform <strong> route optimization to help optimize the garbage collection routes based on how full each waste container is as well as the distance between full waste containers. We then provide drivers with turn-by-turn directions to help direct drivers on the optimal route for garbage collection. </strong> 
 
