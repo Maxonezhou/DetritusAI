@@ -131,21 +131,6 @@ function MapModified() {
             </InfoWindow>
           )}
         </GoogleMap>
-
-        {/* Our center position always in state */}
-        {/* <h3>
-          Center {center.lat}, {center.lng}
-        </h3> */}
-
-        {/* Position of the user's map click */}
-        {/* {clickedLatLng && (
-          <h3>
-            You clicked: {clickedLatLng.lat}, {clickedLatLng.lng}
-          </h3>
-        )} */}
-
-        {/* Position of the user's map click */}
-        {/* {selectedPlace && <h3>Selected Marker: {selectedPlace.id}</h3>} */}
       </Fragment>
     );
   };

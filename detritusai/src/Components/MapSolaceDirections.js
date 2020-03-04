@@ -36,19 +36,7 @@ import Paho from 'paho-mqtt';
     //render the map and markers
     render() {
       return (
-
          this.state.messages
-
-
-
-        //  <div>
-        //     {this.state.messages.map((message,index) => {
-        //         //var str = message.getText();
-        //         return this.state.messages;
-        //     })}
-             
-
-        //  </div>
       )
 
     }
@@ -59,30 +47,6 @@ import Paho from 'paho-mqtt';
 		this.setState(state => {
 
         const messages = message.payloadString;
-
-        // var str = messages;
-        // var lines = [];
-        // lines.push('')
-        // var pos = 0;
-        // var list_idx = 0;
-        // while (pos < str.length)
-        // {
-        //   if (str[pos] != ';') {
-        //     lines[list_idx] += str[pos];
-        //   }
-        //   else {
-        //     list_idx += 1;
-        //     lines.push('')
-        //   }
-        //   pos += 1;
-        // }
-        // str = '';
-        // for (var i = 0; i < lines.length; i++) {
-        //   str += lines[i];
-        //   console.log(i)
-        //   console.log(lines[i]);
-        // }
-			//const messages = state.messages.concat(message.payloadString);
 			return {
 				messages,
 				connected: state.connected,
